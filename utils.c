@@ -3,74 +3,80 @@
 #include <string.h>
 #include "shell.h"
 
-/*
- * print_prompt -  Prints the shell prompt.
- *
- */
-
-void print_prompt()
-{
-	printf("Shell> ");
-}
+#define MAX_ARGUMENTS 100
+#define MAX_INPUT_LENGTH 1000
 
 /*
  * read_input - Reads input from the user and returns the input string.
  *
+ * Returns the input as a string.
  */
 
 char *read_input()
 {
-	char *input = NULL;
-	size_t buffer_size = 0;
-	getline(&input, &buffer_size, stdin); /* Read input form the user */
+	size_t input_length;
+	char *input = malloc(MAX_INPUT_LENGTH * sizeof(char));
 
-	size_t input_length = strlen(input); /* Remove trailing newline character */
-	if (input[input_length - 1] == '\n')
+	if (input == NULL)
+	{
+		fprintf(stderr, "Error: Failed to allocate memory for input\n");
+		exit(EXIT_FAILURE);
+	}
+
+	printf("$ ");
+
+	if (fgets(input, MAX_INPUT_LENGTH, stdin) == NULL)
+	{
+		free(input);
+		return (NULL);
+	}
+
+	input_length = strlen(input);
+	if (input_length > 0 && input[input_length - 1] == '\n')
 	{
 		input[input_length - 1] = '\0';
 	}
-
+	
 	return (input);
 }
 
 /*
- * **parse_input - tokenizes the input string into an array of tokens, separated by delimiters (whitespace characters).
- * @input: The input string.
+ * **parse_input - Takes the input string and tokenizes it using whitespace characters as delimiters.
+ * Description: - Use 'strtok()' to split the input into individual tokens and stores them in an array.
+ *              - Keeps track of the number of arguments ('argc') and sets the elements of the array to NULL (required by function 'execvp()').
  */
 
-char **parse_input(char *input)
+char **parse_input(char *input, int *argc)
 {
-	const char *delimiters = " \t\r\n\a";
-	const int token_buffer_size = 64;
-	int token_count = 0;
+	const char *delimiters = " \t\n";
+	char *token;
+	char **arguments = malloc(MAX_ARGUMENTS * sizeof(char *));
+	int i = 0;
 
-	char **tokens = malloc(token_buffer_size * sizeof(char *));
-	if (tokens == NULL)
+	if (arguments == NULL)
 	{
-		fprintf(stderr, "Allocation error\n");
+		fprintf(stderr, "Error: Failed to allocate memory for arguments\n");
 		exit(EXIT_FAILURE);
 	}
 
-	char *token = strtok(input, delimiters); /* Tokenize the input string */
+	token = strtok(input, delimiters); /* Tokenize the input string */
 	while (token != NULL)
 	{
-		tokens[token_count] = token;
-		token_count++;
+		arguments[i] = token;
+		i++;
 
-		if (token_count >= token_buffer_size)
+		if (i >= MAX_ARGUMENTS)
 		{
-			token_buffer_size += token_buffer_size;
-			tokens = realloc(tokens, token_buffer_size * sizeof(char *));
-			if (tokens == NULL)
-			{
-				fprintf(stderr, "Reallocation error\n");
-				exit(EXIT_FAILURE);
-			}
+			 fprintf(stderr, "Error: Too many arguments\n");
+			 free(arguments);
+			 exit(EXIT_FAILURE);
 		}
 
 		token = strtok(NULL, delimiters);
 	}
-	tokens[token_count] = NULL;
+	arguments[i] = NULL;
 
-	return (tokens);
+	*argc = i;
+
+	return (arguments);
 }

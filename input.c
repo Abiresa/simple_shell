@@ -4,6 +4,7 @@
 #include "shell.h"
 
 #define MAX_INPUT_LENGTH 1000
+#define MAX_ARGUMENTS 100
 
 /*
  * read_input - Reads a line of input from the user using 'fgets()'.
@@ -51,7 +52,8 @@ char **parse_input(char *input, int *argc)
 {
 	const char *delimiter = " \t\n";
 	char *token;
-	char **arguments = malloc(MAX_ARGUMENTS * sizeof(char*)); 
+	char **arguments = malloc(MAX_ARGUMENTS * sizeof(char*));
+	int i = 0;
 
 	if (arguments == NULL)
 	{

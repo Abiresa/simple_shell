@@ -2,28 +2,36 @@
 #include <stdio.h>
 #include <string.h>
 #include <stddef.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include "shell.h"
 
 /*
  * execute_command - Executing a given command.
  */
 
-void execute_command(char *command)
+void execute_command(char *input)
 {
-	/* Parse the command and its arguments */
-	char *arguments[MAX_ARGUMENTS];
-	int num_arguments = parse_arguments(command, arguments);
+	int argc;
+	char **arguments = parse_input(input, &argc);
 
-	/* Check if it's a built-in command and handle it */
+	if (arguments == NULL || arguments[0] == NULL)
+	{
+		free(arguments);
+		return;
+	}
+
 	if (is_builtin_command(arguments[0]))
-			{
-			handle_builtin_command(arguments[0], arguments);
-			}
-			else
-			{
-				/* If it's not a built-in command, execute it as an external program using the exec family of functions */
-				create_child_process(arguments[0], arguments);
-			}
+	{
+		handle_builtin_command(arguments[0], arguments);
+	}
+	else
+	{
+		create_child_process(arguments);
+	}
+
+	free(arguments);
 }
 
 /*
@@ -40,18 +48,18 @@ void handle_builtin_command(char *command, char **arguments)
 		{
 			chdir(getenv("HOME"));
 		}
-		else 
-		{
-			chdir(arguments[1]);
-		}
-		else if (strcmp(command, "exit") == 0)
-		{
-			exit(0);/* Exit the shell */
-		}
 		else
 		{
-			printf("Unknown command: %s\n", command);/* Unknown built-in command */
+			if (chdir(arguments[1]) != 0)
+			{
+				perror("chdir");
+			}
 		}
+	}
+	else if (strcmp(command, "exit") == 0)
+	{
+		exit(EXIT_SUCCESS);
+	}
 }
 
 /*
@@ -62,17 +70,18 @@ void create_child_process(char *command, char **arguments)
 {
 	pid_t pid = fork();
 
-	if (pid < 0)
+	if (pid == -1)
 	{
 		perror("fork");
-		return;
+		exit(EXIT_FAILURE);
 	}
-	/*  Create a child process using fork and execute the command  */
 	else if (pid == 0)
 	{
-		execvp(command, arguments);
-		perror("execvp");
-		exit(1);
+		if (execvp(arguments[0], arguments) == -1)
+		{
+			perror("execvp");
+			exit(EXIT_FAILURE);
+		}
 	}
 	else
 	{
@@ -81,31 +90,7 @@ void create_child_process(char *command, char **arguments)
 	}
 }
 
-/*
- * shell_loop - Represents the main loop of the shell.
- *
- * Description: It prompts the user for input, reads the input using the
- * 			- read_input() function, parses the input into arguments.
- * 			- parse_input() function, and then executes the command.
- * 			- execute() function. The loop continues until the status returned.
- * 			- execute()  is non-zero, indicating that the shell should keep running.
- */
-
-void shell_loop()
+int is_builtin_command(char *command)
 {
-	char *line;
-	char **args;
-	int status;
-
-	do
-	{
-		printf("> ");
-		line = read_input();
-		args = parse_input(line);
-		status = execute(args);
-
-		free(line);
-		free(args);
-	}
-	while (status);
+	return (strcmp(command, "cd") == 0 || strcmp(command, "exit") == 0);
 }

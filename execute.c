@@ -6,10 +6,10 @@
 
 /**
  * execute_command - Execute a command with arguments.
- * @args: The array of arguments.
+ * @input: The command input string.
  */
 
-void execute_command(char **args)
+void execute_command(char *input)
 {
 	/* Process ID variable, and Status of the child process */
 	pid_t pid;
@@ -26,7 +26,9 @@ void execute_command(char **args)
 	else if (pid == 0)
 	{
 		/* Child process */
-		if (execvp(args[0], args) == -1)
+		char **arguments = parse_input(input, NULL);
+
+		if (execvp(arguments[0], arguments) == -1)
 		{
 			perror("Execution failed");
 			exit(EXIT_FAILURE);
