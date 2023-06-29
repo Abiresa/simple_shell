@@ -9,13 +9,15 @@
 #define MAX_INPUT_LENGTH 100
 #define MAX_ARGUMENTS 10
 
+
 void shell_loop(void) {
     char input[MAX_INPUT_LENGTH];
-    char *arguments[MAX_ARGUMENTS];
     pid_t pid;
     int status;
-    int argc;
-    char *token;
+    char *arguments[MAX_ARGUMENTS];
+    char *token = strtok(input, " ");
+    int argc = 0;
+
 
     while (1) {
         printf("#cisfun$ ");
@@ -26,9 +28,6 @@ void shell_loop(void) {
 
         if (strcmp(input, "exit") == 0)
             break;
-
-        argc = 0;
-        token = strtok(input, " ");
 
         while (token != NULL && argc < MAX_ARGUMENTS - 1) {
             arguments[argc++] = token;
@@ -41,20 +40,13 @@ void shell_loop(void) {
             perror("fork");
             exit(EXIT_FAILURE);
         } else if (pid == 0) {
-            if (execvp(arguments[0], arguments) == -1) {
-                char *path = getenv("PATH");
-                char *path_token = strtok(path, ":");
-
-                while (path_token != NULL) {
-                    char *command = malloc(strlen(path_token) + strlen(arguments[0]) + 2);
-                    sprintf(command, "%s/%s", path_token, arguments[0]);
-                    execvp(command, arguments);
-                    free(command);
-                    path_token = strtok(NULL, ":");
-                }
-            perror(arguments[0]);
+            execvp(arguments[0], arguments);
+            if (access(arguments[0], F_OK) == -1) {
+                printf("Command not found: %s\n", arguments[0]);
+            } else {
+                perror(arguments[0]);
+            }
             exit(EXIT_FAILURE);
-	    }
         } else {
             waitpid(pid, &status, 0);
         }
