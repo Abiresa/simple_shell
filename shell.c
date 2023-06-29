@@ -40,8 +40,7 @@ void execute_command(char *input)
 
 void handle_builtin_command(char *command, char **arguments)
 {
-
-        /*  Implement the logic for each built-in command  */
+	/*	Implement the logic for each built-in command	*/
 	if (strcmp(command, "cd") == 0)
 	{
 		if (arguments[1] == NULL) /* Change directory */
@@ -63,7 +62,8 @@ void handle_builtin_command(char *command, char **arguments)
 }
 
 /*
- * create_child_process - Creates a child process and executes the command within that process.
+ * create_child_process - Creates a child process
+ * and executes the command within that process.
  */
 
 void create_child_process(char *command, char **arguments)
@@ -86,6 +86,7 @@ void create_child_process(char *command, char **arguments)
 	else
 	{
 		int status;
+
 		waitpid(pid, &status, 0);
 	}
 }

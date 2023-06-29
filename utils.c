@@ -36,14 +36,17 @@ char *read_input()
 	{
 		input[input_length - 1] = '\0';
 	}
-	
 	return (input);
 }
 
 /*
- * **parse_input - Takes the input string and tokenizes it using whitespace characters as delimiters.
- * Description: - Use 'strtok()' to split the input into individual tokens and stores them in an array.
- *              - Keeps track of the number of arguments ('argc') and sets the elements of the array to NULL (required by function 'execvp()').
+ * **parse_input - Takes the input string and tokenizes
+ * it using whitespace characters as delimiters.
+ * Description: - Use 'strtok()' to split the input into
+ * individual tokens and stores them in an array.
+ *              - Keeps track of the number of arguments ('argc')
+ * and sets the elements of the array to NULL (required by function
+ * 'execvp()').
  */
 
 char **parse_input(char *input, int *argc)
@@ -65,7 +68,7 @@ char **parse_input(char *input, int *argc)
 		arguments[i] = token;
 		i++;
 
-		if (i >= MAX_ARGUMENTS)
+		if i >= MAX_ARGUMENTS :
 		{
 			 fprintf(stderr, "Error: Too many arguments\n");
 			 free(arguments);

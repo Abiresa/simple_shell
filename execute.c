@@ -36,16 +36,17 @@ void execute_command(char *input)
 		else
 		{
 			/* Parent process */
-			do
-			{
+			do {
 				pid_t wpid = waitpid(pid, &status, WUNTRACED);
+
 				if (wpid == -1)
+
+
 				{
 					perror("Waiting for child process failed");
 					exit(EXIT_FAILURE);
 				}
-			}
-			while (!WIFEXITED(status) && !WIFSIGNALED(status));
+			} while (!WIFEXITED(status) && !WIFSIGNALED(status));
 		}
 	}
 }
