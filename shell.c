@@ -1,97 +1,65 @@
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include <stddef.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 #include "shell.h"
 
-/*
- * execute_command - Executing a given command.
- */
+#define MAX_INPUT_LENGTH 1000
+#define MAX_ARGUMENTS 100
 
-void execute_command(char *input)
+char *read_input()
 {
-	int argc;
-	char **arguments = parse_input(input, &argc);
+	size_t input_length = 0;
+	char *input = malloc(MAX_INPUT_LENGTH * sizeof(char));
 
-	if (arguments == NULL || arguments[0] == NULL)
+	if (input == NULL)
 	{
-		free(arguments);
-		return;
-	}
-
-	if (is_builtin_command(arguments[0]))
-	{
-		handle_builtin_command(arguments[0], arguments);
-	}
-	else
-	{
-		create_child_process(arguments);
-	}
-
-	free(arguments);
-}
-
-/*
- * handle_builtin_command - Handles built-in commands.
- */
-
-void handle_builtin_command(char *command, char **arguments)
-{
-	/*	Implement the logic for each built-in command	*/
-	if (strcmp(command, "cd") == 0)
-	{
-		if (arguments[1] == NULL) /* Change directory */
-		{
-			chdir(getenv("HOME"));
-		}
-		else
-		{
-			if (chdir(arguments[1]) != 0)
-			{
-				perror("chdir");
-			}
-		}
-	}
-	else if (strcmp(command, "exit") == 0)
-	{
-		exit(EXIT_SUCCESS);
-	}
-}
-
-/*
- * create_child_process - Creates a child process
- * and executes the command within that process.
- */
-
-void create_child_process(char *command, char **arguments)
-{
-	pid_t pid = fork();
-
-	if (pid == -1)
-	{
-		perror("fork");
+		fprintf(stderr, "Error: Failed to allocate memory for input\n");
 		exit(EXIT_FAILURE);
 	}
-	else if (pid == 0)
+	/* Print shell prompt */
+	printf("$ ");
+	if (fgets(input, MAX_INPUT_LENGTH, stdin) == NULL)
 	{
-		if (execvp(arguments[0], arguments) == -1)
-		{
-			perror("execvp");
-			exit(EXIT_FAILURE);
-		}
+		free(input);
+		return (NULL);
 	}
-	else
+	/* Remove trailing newline character, if present */
+	input_length = strlen(input);
+	if (input_length > 0 && input[input_length - 1] == '\n')
 	{
-		int status;
-
-		waitpid(pid, &status, 0);
+		input[input_length - 1] = '\0';
 	}
+	return (input);
 }
 
-int is_builtin_command(char *command)
+char **parse_input(char *input, int *argc)
 {
-	return (strcmp(command, "cd") == 0 || strcmp(command, "exit") == 0);
+	const char *delimiter = " \t\n";
+	char *token;
+	char **arguments = malloc(MAX_ARGUMENTS * sizeof(char *));
+	int i = 0;
+
+	if (arguments == NULL)
+	{
+		fprintf(stderr, "Error: Failed to allocate memory for arguments\n");
+		exit(EXIT_FAILURE);
+	}
+	token = strtok(input, delimiter);
+	while (token != NULL)
+	{
+		arguments[i] = token;
+		i++;
+		if (i >= MAX_ARGUMENTS)
+		{
+			fprintf(stderr, "Error: Too many arguments\n");
+			free(arguments);
+			exit(EXIT_FAILURE);
+		}
+		token = strtok(NULL, delimiter);
+	}
+	/* Set the last argument to NULL for execvp */
+	arguments[i] = NULL;
+
+	*argc = i;
+	return (arguments);
 }
