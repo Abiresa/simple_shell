@@ -11,6 +11,7 @@
 
 void shell_loop(void) {
     char input[MAX_INPUT_LENGTH];
+    char *arguments[MAX_ARGUMENTS];
     pid_t pid;
     int status;
 
@@ -24,7 +25,6 @@ void shell_loop(void) {
         if (strcmp(input, "exit") == 0)
             break;
 
-        char *arguments[MAX_ARGUMENTS];
         char *token = strtok(input, " ");
         int argc = 0;
 
