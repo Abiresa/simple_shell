@@ -14,6 +14,8 @@ void shell_loop(void) {
     char *arguments[MAX_ARGUMENTS];
     pid_t pid;
     int status;
+    int argc;
+    char *token;
 
     while (1) {
         printf("#cisfun$ ");
@@ -25,8 +27,8 @@ void shell_loop(void) {
         if (strcmp(input, "exit") == 0)
             break;
 
-        char *token = strtok(input, " ");
-        int argc = 0;
+        argc = 0;
+        token = strtok(input, " ");
 
         while (token != NULL && argc < MAX_ARGUMENTS - 1) {
             arguments[argc++] = token;
