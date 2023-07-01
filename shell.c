@@ -1,42 +1,43 @@
+#include "shell.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
 
-#define MAX_COMMAND_LENGTH 100
-#define MAX_ARGS 10
-
-/*Function to tokenize the input command into arguments */
-int tokenize_input(char *input, char **args, int *argc)
+void display_prompt()
 {
-	char *token = strtok(input, " \t\n");
-	while (token != NULL && *argc < MAX_ARGS - 1)
-	{
-		args[*argc++] = token;
-		token = strtok(NULL, " \t\n");
-	}
-
-	args[*argc] = NULL;
-	return (*argc);
+	printf("#cisfun$ ");
 }
 
-/* Function to execute the command */
-void execute_command(char **args)
+int read_command(char *input)
+{
+	if (fgets(input, MAX_COMMAND_LENGTH, stdin) == NULL)
+	{
+		return (0); /* End of file (Ctrl+D) condition */
+	}
+
+	/* Remove the newline character at the end of the input */
+	input[strcspn(input, "\n")] = '\0';
+	return (1);
+}
+
+void execute_command(char *command)
 {
 	pid_t pid = fork();
-	if (pid < 0)
-	{
-		perror("fork error");
-	}
-	else if (pid == 0)
+	if (pid == 0)
 	{
 		/* Child process */
-		if (execvp(args[0], args) < 0)
+		if (execlp(command, command, NULL) == -1)
 		{
-			perror("execvp error");
+			perror("Error");
 			exit(EXIT_FAILURE);
 		}
+	}
+	else if (pid < 0)
+	{
+		/* Forking error */
+		perror("Error");
 	}
 	else
 	{
