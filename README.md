@@ -1,124 +1,118 @@
-# Simple Shell
+# 0x16. C - Simple shell
+In this project we'll create a simple UNIX command interpreter in C programming language.
 
-## Background Context
-Write a simple UNIX command interpreter. 
+## Table of Contents
+* [Introduction](#Introduction)
+  * What is Shell
+  * What is it for
+* [Project Information](#Project-Information)
+    * Tasks
+    * General requirements
+    * Allowed functions
+* [Documentation](#Documentation)
+    * Compilation
+    * Testing
+    * Files
+    * Flowchart
+* [Extra Information](#Extra-Information)
+    * Resources
+* [Authors](#Authors)
 
-### General
-* Who designed and implemented the original Unix operating system
-* Who wrote the first version of the UNIX shell
-* Who invented the B programming language (the direct predecessor to the C programming language)
-* Who is Ken Thompson
-* How does a shell work
-* What is a pid and a ppid
-* How to manipulate the environment of the current process
-* What is the difference between a function and a system call
-* How to create processes
-* What are the three prototypes of main
-* How does the shell use the PATH to find the programs
-* How to execute another program with the execve system call
-* How to suspend the execution of a process until one of its children terminates
-* What is EOF / “end-of-file”?
+## Introduction
 
-### Requirements
+### What is Shell
+A **shell** is a command-line interpreter, it is the computer program that provides a user interface to access the services of the operating system. Depending on the type of interface they use, shells can be of various types, in this case, a shell program of the type **`sh`** ([Bourne Shell](https://en.wikipedia.org/wiki/Bourne_shell)) will be developed. Users typically interact with a shell using a [terminal emulator](https://en.wikipedia.org/wiki/Terminal_emulator) that is used for entering data into and displaying or printing data from, a computer or a computing system.
 
-### Output
-* Unless specified otherwise, your program must have the exact same output as sh (/bin/sh) as well as the exact same error output.
-* The only difference is when you print an error, the name of the program must be equivalent to your argv[0] (See below)
-* Example of error with sh:
+### What is it for
+This consists of interpreting orders. It incorporates features such as process control, input/output redirection, law listing and reading, protection, communications, and a command language for writing batch programs or scripts. All Unix-type systems have at least one interpreter compatible with the Bourne shell. The Bourne shell program is found within the Unix file hierarchy at **`/bin/sh`**.
 
-$ echo "qwerty" | /bin/sh
-/bin/sh: 1: qwerty: not found
-$ echo "qwerty" | /bin/../bin/sh
-/bin/../bin/sh: 1: qwerty: not found
-$
-Same error with your program hsh:
+## Project Information
 
-$ echo "qwerty" | ./hsh
-./hsh: 1: qwerty: not found
-$ echo "qwerty" | ./././hsh
-./././hsh: 1: qwerty: not found
-$
+### Tasks
 
-### List of allowed functions and system calls
-* access (man 2 access)
-* chdir (man 2 chdir)
-* close (man 2 close)
-* closedir (man 3 closedir)
-* execve (man 2 execve)
-* exit (man 3 exit)
-* _exit (man 2 _exit)
-* fflush (man 3 fflush)
-* fork (man 2 fork)
-* free (man 3 free)
-* getcwd (man 3 getcwd)
-* getline (man 3 getline)
-* getpid (man 2 getpid)
-* isatty (man 3 isatty)
-* kill (man 2 kill)
-* malloc (man 3 malloc)open (man 2 open)
-* opendir (man 3 opendir)
-* perror (man 3 perror)
-* read (man 2 read)
-* readdir (man 3 readdir)
-* signal (man 2 signal)
-* stat (__xstat) (man 2 stat)
-* lstat (__lxstat) (man 2 lstat)
-* fstat (__fxstat) (man 2 fstat)
-* strtok (man 3 strtok)
-* wait (man 2 wait)
-* waitpid (man 2 waitpid)
-* wait3 (man 2 wait3)
-* wait4 (man 2 wait4)
-* write (man 2 write)
+* Task 0. README, man, AUTHORS
+* Task 1. Betty would be proud
+* Task 2. Simple shell 0.1
+* Task 3. Simple shell 0.2
+* Task 4. Simple shell 0.3
+* Task 5. Simple shell 0.4
+* Task 6. Simple shell 1.0
+* Task 7. What happens when you type ls -l in the shell
 
-#### Compilation
-* Your shell will be compiled this way:
+### General requirements
+ * Allowed editors: vi, vim, emacs
+ * All your files will be compiled on `Ubuntu 14.04 LTS`
+ * Your C programs and functions will be compiled with `gcc 4.8.4` using the flags `-Wall` `-Werror` `-Wextra` and `-pedantic`
+ * Your code should use the Betty style. It will be checked using betty-style.pl and betty-doc.pl
+ * No more than 5 functions per file
+ * All your header files should be include guarded
+ * This shell should not have any memory leaks
+ * Unless specified otherwise, your program must have the exact same output as `sh` (`/bin/sh`) as well as the exact same error output.
 
-gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
+### Allowed functions used 
 
+* `execve` (man 2 execve)
+* `exit` (man 3 exit)
+* `_exit` (man 2 _exit)
+* `fork` (man 2 fork)
+* `free` (man 3 free)
+* `getline` (man 3 getline)
+* `isatty` (man 3 isatty)
+* `malloc` (man 3 malloc)
+* `perror`(man 3 perror)
+* `signal` (man 2 signal)
+* `stat` (__ xstat) (man 2 stat)
+* `strtok` (man 3 strtok)
+* `wait` (man 2 wait)
+* `write` (man 2 write)
 
-#### Testing
-* Your shell should work like this in interactive mode:
+## Documentation
 
+### Compilation
+Your shell will be compiled this way:
+
+`gcc -Wall -Werror -Wextra -pedantic *.c -o hsh`
+
+### Testing
+
+Your shell should work like this in interactive mode:
+
+```
 $ ./hsh
 ($) /bin/ls
 hsh main.c shell.c
 ($)
 ($) exit
 $
+```
+But also in non-interactive mode:
 
-* But also in non-interactive mode:
-
-$ echo "/bin/ls" | ./hsh
-hsh main.c shell.c test_ls_2
+```
+$ ./hsh
+($) /bin/ls
+hsh main.c shell.c
+($)
+($) exit
 $
-$ cat test_ls_2
-/bin/ls
-/bin/ls
-$
-$ cat test_ls_2 | ./hsh
-hsh main.c shell.c test_ls_2
-hsh main.c shell.c test_ls_2
-$
+```
+### Files
 
-### Tasks
+##|File|Description
+---|---|---
+|[_builtin.c]|Built-ins functions exit and print env|
+|[_fork_function.c]|Create the fork function to execute the command types by the user|
+|[_get_token.c]|Tokenize the strings|
+|[_get_path.c]|Get the env to find the PATH|
+|[_getline_command.c]|Print the $ and get what the user types|
+|[shell.h]|Prototypes functions and headers|
+|[simple_shell.c]|Our simple shell functions|
+|[_str_utils.c]|Auxiliar strings functions|
+|[_values_path.c]|Concatenate the path with the command|
+|[AUTHORS]|Contributors in this repository|
+|[man_1_simpleShell]|Manual page our of Simple Shell|
+|[README.md]|Information about our repository|
 
-0. Betty would be proud
-Write a beautiful code that passes the Betty checks
-1. Simple shell 0.1
-Write a UNIX command line interpreter.
-2. Simple shell 0.2
-Simple shell 0.1 +
-* Handle command lines with arguments
-3. Simple shell 0.3
-Simple shell 0.2 +
-* Handle the PATH
-* fork must not be called if the command doesn’t exist
-4. Simple shell 0.4
-Simple shell 0.3 +
-* Implement the exit built-in, that exits the shell
-* Usage: exit
-* You don’t have to handle any argument to the built-in exit
-5. Simple shell 1.0
-Simple shell 0.4 +
-* Implement the env built-in, that prints the current environment
+## Authors
+
+* **Oumaima SAAOUF**
+* **Abir ESSAADI**
