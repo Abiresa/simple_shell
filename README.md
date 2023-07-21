@@ -101,15 +101,13 @@ $
 ---|---|---
 |[_builtin.c]|Built-ins functions exit and print env|
 |[_fork_function.c]|Create the fork function to execute the command types by the user|
-|[_get_token.c]|Tokenize the strings|
-|[_get_path.c]|Get the env to find the PATH|
-|[_getline_command.c]|Print the $ and get what the user types|
+|[get_token.c]|Tokenize the strings|
+|[get_path.c]|Get the env to find the PATH|
+|[getline_cmd.c]|Print the $ and get what the user types|
 |[shell.h]|Prototypes functions and headers|
-|[simple_shell.c]|Our simple shell functions|
-|[_str_utils.c]|Auxiliar strings functions|
-|[_values_path.c]|Concatenate the path with the command|
-|[AUTHORS]|Contributors in this repository|
-|[man_1_simpleShell]|Manual page our of Simple Shell|
+|[shell.c]|Our simple shell functions|
+|[str_utils.c]|Auxiliar strings functions|
+|[values_path.c]|Concatenate the path with the command|
 |[README.md]|Information about our repository|
 
 ## Authors
