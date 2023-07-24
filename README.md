@@ -106,7 +106,7 @@ $
 |[getline_cmd.c]|Print the $ and get what the user types|
 |[shell.h]|Prototypes functions and headers|
 |[shell.c]|Our simple shell functions|
-|[str_utils.c]|Auxiliar strings functions|
+|[_str_fctns.c]|Auxiliar strings functions|
 |[values_path.c]|Concatenate the path with the command|
 |[README.md]|Information about our repository|
 
