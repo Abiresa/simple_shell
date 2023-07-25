@@ -16,13 +16,15 @@ extern char **environ;
 int _strcmp(char *S, char *Z);
 int _strlen(char *s);
 size_t _strncmp(char *S1, char *S2, size_t n);
-char *strcpy(char *dst, char *src);
+char *_strcpy(char *dst, char *src);
 char *_strtok(char *str, const char *delim);
 size_t _strcspn(const char *S1, const char *S2);
 size_t _strspn(const char *S1, const char *S2);
 char *_strchr(const char *s, int c);
 char *_strcat(char *dst, char *src);
 
+char *_get_path(char **env);
+int _find_command_in_path(char **command, char **env);
 char *read_user_input(void);
 char **tokenize_input(char *input);
 void exit_shell(char **arguments, char *command_line, int exit_code);

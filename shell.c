@@ -21,7 +21,7 @@ int main(int argc, char **argv, char **envp)
 		if (command_line)
 		{
 			path_value++;
-			parse_command = tokenize_input(command_line);
+			parsed_command = tokenize_input(command_line);
 			if (!parsed_command)
 			{
 				free(command_line);
@@ -33,7 +33,7 @@ int main(int argc, char **argv, char **envp)
 				print_environment(envp);
 			else
 			{
-				command_found = find_command_in_path(&parsed_command[0], envp);
+				command_found = _find_command_in_path(&parsed_command[0], envp);
 				exit_status = execute_child_process(parsed_command, argv, envp, command_line, path_value, command_found);
 				if (command_found == 0)
 					free(parsed_command[0]);
@@ -44,7 +44,7 @@ int main(int argc, char **argv, char **envp)
 		{
 			if (isatty(STDIN_FILENO))
 				write(STDOUT_FILENO, "\n", 1);
-			exit(exit_stattus);
+			exit(exit_status);
 		}
 		free(command_line);
 	}

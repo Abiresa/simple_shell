@@ -9,7 +9,7 @@
 char *read_user_input(void)
 {
 	char *line_buffer = NULL;
-	size_t biffer_size = 0;
+	size_t buffer_size = 0;
 
 	if (isatty(STDIN_FILENO))
 		write(STDOUT_FILENO, "#cisfun$ ", 9);

@@ -42,6 +42,8 @@ size_t _strcspn(const char *S1, const char *S2)
 			return (r);
 		S1++, r++;
 	}
+
+	return (r);
 }
 
 /**
