@@ -99,15 +99,16 @@ $
 
 ##|Description
 ---|---
-|[_builtin.c]|Built-ins functions exit and print env|
-|[_fork_function.c]|Create the fork function to execute the command types by the user|
-|[get_token.c]|Tokenize the strings|
+|[_exit_shell.c]|Built-ins functions exit and print env|
+|[execute_child_process.c]|Create the fork function to execute the command types by the user|
+|[tokenize_input.c]|Tokenize the strings|
 |[get_path.c]|Get the env to find the PATH|
-|[getline_cmd.c]|Print the $ and get what the user types|
+|[read_user_input.c]|Print the $ and get what the user types|
 |[shell.h]|Prototypes functions and headers|
 |[shell.c]|Our simple shell functions|
+|[_strtok.c]|String manipulation functions|
 |[_str_fctns.c]|Auxiliar strings functions|
-|[values_path.c]|Concatenate the path with the command|
+|[_find_command_in_path.c]|Concatenate the path with the command|
 |[README.md]|Information about our repository|
 
 ## Authors
